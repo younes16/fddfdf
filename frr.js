@@ -224,3 +224,117 @@ jQuery('body').bind('click.' + self.opts.namespace, clickHandler);
 
     return pub;
 };  
+ var trustSealsBase = "https://hektorcommerce.com/apps/trustseals"; 
+  var myExampleClickHandler = function (element) { console.log('Clicked element:', element); }
+var myDomOutline = DomOutline({ click: myExampleClickHandler, filter : 'div' }); 
+          myDomOutline.start();
+
+$('body').on('click', function(){
+myDomOutline.stop()
+});
+  
+ url = new URL(window.location.href);
+ if (url.searchParams.get('tknsalbimy')) {
+
+var decodedString = selectPosition()
+var data = makeTrustBadge(decodedString)
+datainject = data
+
+ } 
+    else {
+console.log('run here')
+
+    }  
+  
+  
+  
+function selectPosition() {
+    var currentLocation = window.location
+    var url = new URL(currentLocation);
+    var c = url.searchParams.get("tknsalbimy");
+    var decodedString = atob(c);
+    console.log(decodedString)
+    decodedString = JSON.parse(decodedString)
+
+ var newURL = location.href.split("?")[0];
+    window.history.pushState('object', document.title, newURL);	
+
+  return decodedString;
+}
+function makeTrustBadge(recommendations) {
+    var aligner = element("div");
+    aligner.id = "trust-seals-content-div";
+    aligner.className = "trust-seals-preview";
+    setStyles(aligner, {
+        "text-align": recommendations.trust_badge_alignment,
+        "width": "100%"
+    });
+    var container = element("div");
+    setStyles(container, {
+        "display": "inline-block"
+    });
+    aligner.appendChild(container);
+    var badgeWrapper = element("div");
+    var badges = makeBadges(recommendations);
+    badges.forEach(function(badge) {
+        setStyles(badge, {
+            "display": "inline-block",
+            "margin": "0 7px",
+            "vertical-align": "top"
+        });
+        badgeWrapper.appendChild(badge);
+       ;
+    });
+    container.appendChild(badgeWrapper);
+    return aligner;
+}
+    function element(tag) {
+    return document.createElement(tag);
+}
+  function setStyles(element, styles) {
+    Object.keys(styles).forEach(function(key) {
+        element.style[key] = styles[key];
+    });
+}
+  
+  function makeBadges(recommendations) {
+    var recommendedBadges = recommendations.trust_badges || [];
+    var badgeElements = [];
+    var elementWidth = Math.max(recommendations.trust_badge_element_width, recommendations.trust_badge_icon_size);
+    recommendedBadges.forEach(function(badge) {
+        var badgeElement = element("div");
+        setStyles(badgeElement, {
+            "width": elementWidth + "px"
+        });
+        var icon = element("img");
+        icon.setAttribute("src", getBadgeImageURL(recommendations, badge));
+        icon.setAttribute("alt", badge.label);
+        setStyles(icon, {
+            "width": recommendations.trust_badge_icon_size + "px",
+            "height": recommendations.trust_badge_icon_size + "px"
+        });
+        badgeElement.appendChild(icon);
+        badgeElements.push(badgeElement);
+    });
+    return badgeElements;
+}
+  function getBadgeImageURL(recommendations, badge) {
+    var color1 = recommendations.trust_badge_color_1;
+    color1 = color1.replace(/^#/, "");
+    var color1URLParameter = ("&color-1=" + color1);
+    var color2URLParameter = "";
+    if (!/^[0]/.test(badge.icon)) {
+        var color2 = recommendations.trust_badge_color_2;
+        color2 = color2.replace(/^#/, "");
+        color2URLParameter = ("&color-2=" + color2);
+    }
+    var color3URLParameter = "";
+    if (!/^[0]/.test(badge.icon)) {
+        var color3 = recommendations.trust_badge_color_3;
+        color3 = color3.replace(/^#/, "");
+        color3URLParameter = ("&color-3=" + color3);
+    }
+    return (trustSealsBase + "/svg_images/?image=" + badge.icon +
+        color1URLParameter + color2URLParameter + color3URLParameter);
+}
+ 
